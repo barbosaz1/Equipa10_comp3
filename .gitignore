@@ -1,0 +1,102 @@
+##############################
+# MAVEN
+##############################
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+##############################
+# IDEs
+##############################
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# VS Code
+.vscode/
+
+##############################
+# SPRING BOOT / JAVA
+##############################
+*.log
+*.tmp
+*.cache
+*.DS_Store
+*.war
+*.ear
+
+# Compiled Java classes
+*.class
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+##############################
+# SYSTEM / OS FILES
+##############################
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+##############################
+# ENVIRONMENT VARIABLES / SECRETS
+##############################
+# Nunca enviar ficheiros com secrets!
+application.properties
+application.yml
+*.env
+
+# Se quiseres permitir várias configs, cria:
+# application-example.properties
+# application-dev.properties
+# application-prod.properties
+
+##############################
+# DATABASES / DATA FILES
+##############################
+*.db
+*.mv.db
+*.h2.db
+*.sql
+*.sqlite
+*.db-journal
+
+##############################
+# LOGS
+##############################
+*.log
+/logs/
+/*.log
+
+##############################
+# BUILD TOOLS
+##############################
+/dist/
+/build/
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+##############################
+# MULTIMEDIA / OUTPUT
+##############################
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
