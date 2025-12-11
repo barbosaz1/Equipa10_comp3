@@ -124,8 +124,8 @@ gestaoeventos4/
 
 3. **Editar `application.properties`** com as suas credenciais MySQL:
    ```properties
-   spring.datasource.username=seu_usuario
-   spring.datasource.password=sua_password
+   spring.datasource.username=utilizador
+   spring.datasource.password=password
    ```
 
 4. **Criar a base de dados MySQL** (opcional - será criada automaticamente):
