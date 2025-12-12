@@ -103,12 +103,31 @@ public class DocenteController implements Initializable {
         colEventoAcoes.setCellFactory(col -> new TableCell<>() {
             private final Button btnEditar = new Button("✏️");
             private final Button btnApagar = new Button("🗑️");
-            private final HBox hbox = new HBox(5, btnEditar, btnApagar);
+            private final MenuButton btnEstado = new MenuButton("📋");
+            private final HBox hbox = new HBox(5, btnEditar, btnEstado, btnApagar);
 
             {
                 btnEditar.getStyleClass().add("btn-icon");
                 btnApagar.getStyleClass().add("btn-icon");
+                btnEstado.getStyleClass().add("btn-icon");
                 btnApagar.setStyle("-fx-text-fill: #ef4444;");
+                btnEstado.setTooltip(new Tooltip("Alterar estado"));
+
+                MenuItem itemRascunho = new MenuItem("📝 Rascunho");
+                MenuItem itemPublicar = new MenuItem("🟢 Publicar");
+                MenuItem itemCancelar = new MenuItem("🔴 Cancelar");
+                MenuItem itemConcluir = new MenuItem("✅ Concluir");
+
+                itemRascunho.setOnAction(e -> alterarEstadoEvento(getTableView().getItems().get(getIndex()),
+                        gestaoeventos.entity.EstadoEvento.RASCUNHO));
+                itemPublicar.setOnAction(e -> alterarEstadoEvento(getTableView().getItems().get(getIndex()),
+                        gestaoeventos.entity.EstadoEvento.PUBLICADO));
+                itemCancelar.setOnAction(e -> alterarEstadoEvento(getTableView().getItems().get(getIndex()),
+                        gestaoeventos.entity.EstadoEvento.CANCELADO));
+                itemConcluir.setOnAction(e -> alterarEstadoEvento(getTableView().getItems().get(getIndex()),
+                        gestaoeventos.entity.EstadoEvento.CONCLUIDO));
+
+                btnEstado.getItems().addAll(itemRascunho, itemPublicar, itemCancelar, itemConcluir);
 
                 btnEditar.setOnAction(e -> editarEvento(getTableView().getItems().get(getIndex())));
                 btnApagar.setOnAction(e -> apagarEvento(getTableView().getItems().get(getIndex())));
@@ -229,7 +248,67 @@ public class DocenteController implements Initializable {
     }
 
     private void editarEvento(EventoDTO evento) {
-        mostrarInfo("Funcionalidade de editar evento em desenvolvimento.");
+        if (!UserSession.getInstance().isLoggedIn())
+            return;
+
+        try {
+            List<LocalDTO> locais = localService.listarTodos();
+            Integer docenteNumero = UserSession.getInstance().getUser().getNumero();
+
+            java.util.Optional<EventoCreateDTO> resultado = EventoDialogHelper.mostrarDialogoEditarEvento(
+                    evento, locais, docenteNumero);
+
+            resultado.ifPresent(dto -> {
+                EventoDTO atualizado = eventoService.atualizar(evento.getId(), dto);
+                if (atualizado != null) {
+                    mostrarSucesso("Evento '" + atualizado.getTitulo() + "' atualizado com sucesso!");
+                    carregarEventos();
+                    setupCombos();
+                } else {
+                    mostrarErro("Falha ao atualizar o evento.");
+                }
+            });
+        } catch (Exception e) {
+            mostrarErro("Erro ao editar evento: " + e.getMessage());
+        }
+    }
+
+    private void alterarEstadoEvento(EventoDTO evento, gestaoeventos.entity.EstadoEvento novoEstado) {
+        if (evento.getEstado() == novoEstado) {
+            mostrarInfo("O evento já está no estado " + novoEstado + ".");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Alteração de Estado");
+        confirm.setHeaderText("Alterar estado do evento: " + evento.getTitulo());
+        confirm.setContentText("O estado atual é " + evento.getEstado() + ". Deseja alterar para " + novoEstado + "?");
+
+        confirm.showAndWait().filter(r -> r == ButtonType.OK).ifPresent(r -> {
+            try {
+                EventoCreateDTO dto = new EventoCreateDTO();
+                dto.setTitulo(evento.getTitulo());
+                dto.setDescricao(evento.getDescricao());
+                dto.setDataInicio(evento.getDataInicio());
+                dto.setDataFim(evento.getDataFim());
+                dto.setTipo(evento.getTipo());
+                dto.setMaxParticipantes(evento.getMaxParticipantes());
+                dto.setLocalId(evento.getLocalId());
+                dto.setCriadorNumero(evento.getCriadorNumero());
+                dto.setEstado(novoEstado);
+
+                EventoDTO atualizado = eventoService.atualizar(evento.getId(), dto);
+                if (atualizado != null) {
+                    mostrarSucesso("Estado alterado para " + novoEstado + " com sucesso!");
+                    carregarEventos();
+                    setupCombos();
+                } else {
+                    mostrarErro("Falha ao alterar o estado do evento.");
+                }
+            } catch (Exception e) {
+                mostrarErro("Erro ao alterar estado: " + e.getMessage());
+            }
+        });
     }
 
     private void apagarEvento(EventoDTO evento) {
