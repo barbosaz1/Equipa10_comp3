@@ -22,13 +22,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- * 
- * Gere as funcionalidades específicas do perfil Gestor:
- * - Gerir locais de eventos (visualização)
- * - Criar e gerir eventos
- * - Visualizar estatísticas
- * - Enviar anúncios para todos os utilizadores
- * 
+ * Controlador do painel do Gestor de Eventos.
+ * Permite gerir locais, criar eventos, ver estatísticas e enviar anúncios.
  */
 public class GestorController implements Initializable {
 
@@ -36,8 +31,7 @@ public class GestorController implements Initializable {
     private final EventoService eventoService = new EventoService();
     private final NotificacaoClientService notificacaoService = new NotificacaoClientService();
 
-    //COMPONENTES DE UI - LOCAIS
-
+    // Tabela de locais
     @FXML
     private TableView<LocalDTO> tblLocais;
     @FXML
@@ -47,8 +41,7 @@ public class GestorController implements Initializable {
     @FXML
     private TableColumn<LocalDTO, String> colLocalMorada;
 
-    //COMPONENTES DE UI - ESTATÍSTICAS
-
+    // Estatísticas
     @FXML
     private ComboBox<EventoDTO> cmbEventos;
     @FXML
@@ -56,15 +49,13 @@ public class GestorController implements Initializable {
     @FXML
     private Label lblTotalInscricoes, lblInscricoesAtivas, lblCheckIns, lblVagas, lblOcupacao;
 
-    //COMPONENTES DE UI - ANÚNCIOS
-
+    // Anúncios
     @FXML
     private TextArea txtAnuncio;
     @FXML
     private Label lblResultadoAnuncio;
 
-    //COMPONENTES DE UI - EVENTOS
-
+    // Tabela de eventos
     @FXML
     private TableView<EventoDTO> tblEventos;
     @FXML
@@ -78,9 +69,6 @@ public class GestorController implements Initializable {
 
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    /**
-     * Inicializa o controlador após o carregamento do FXML.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupLocaisTable();
@@ -90,18 +78,12 @@ public class GestorController implements Initializable {
         carregarComboEventos();
     }
 
-    /**
-     * Configura a tabela de locais.
-     */
     private void setupLocaisTable() {
         colLocalNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colLocalCapacidade.setCellValueFactory(new PropertyValueFactory<>("capacidade"));
         colLocalMorada.setCellValueFactory(new PropertyValueFactory<>("morada"));
     }
 
-    /**
-     * Configura a tabela de eventos com ações.
-     */
     private void setupEventosTable() {
         colEventoTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colEventoData.setCellValueFactory(c -> new SimpleStringProperty(
@@ -109,7 +91,6 @@ public class GestorController implements Initializable {
         colEventoEstado.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getEstado() != null ? c.getValue().getEstado().toString() : ""));
 
-        // Se a coluna de ações existir, configurar
         if (colEventoAcoes != null) {
             colEventoAcoes.setCellFactory(col -> new TableCell<>() {
                 private final Button btnEditar = new Button("✏️");
@@ -134,9 +115,6 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Carrega a lista de locais disponíveis.
-     */
     @FXML
     public void carregarLocais() {
         try {
@@ -147,22 +125,15 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Informa que novos locais devem ser criados pelo Admin.
-     */
     @FXML
     public void novoLocal() {
         mostrarInfo("Para criar novos locais, utilize o painel Admin.");
     }
 
-    /**
-     * Carrega os eventos criados pelo gestor atual.
-     */
     @FXML
     public void carregarEventos() {
-        if (!UserSession.getInstance().isLoggedIn()) {
+        if (!UserSession.getInstance().isLoggedIn())
             return;
-        }
         try {
             Integer numero = UserSession.getInstance().getUser().getNumero();
             List<EventoDTO> eventos = eventoService.listarPorOrganizador(numero);
@@ -172,9 +143,6 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Carrega todos os eventos para o ComboBox de estatísticas.
-     */
     private void carregarComboEventos() {
         try {
             List<EventoDTO> eventos = eventoService.listarTodos();
@@ -195,10 +163,6 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Abre o diálogo para criar um novo evento.
-     * O gestor pode criar eventos e será o organizador do mesmo.
-     */
     @FXML
     public void criarEvento() {
         if (!UserSession.getInstance().isLoggedIn()) {
@@ -207,7 +171,6 @@ public class GestorController implements Initializable {
         }
 
         try {
-            // Carregar locais disponíveis
             List<LocalDTO> locais = localService.listarTodos();
             if (locais.isEmpty()) {
                 mostrarAviso("Não existem locais disponíveis. Contacte o administrador.");
@@ -215,8 +178,6 @@ public class GestorController implements Initializable {
             }
 
             Integer criadorNumero = UserSession.getInstance().getUser().getNumero();
-
-            // Mostrar diálogo de criação
             Optional<EventoCreateDTO> resultado = EventoDialogHelper.mostrarDialogoCriarEvento(locais, criadorNumero);
 
             resultado.ifPresent(dto -> {
@@ -234,16 +195,32 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Abre o diálogo para editar um evento existente.
-     */
     private void editarEvento(EventoDTO evento) {
-        mostrarInfo("Funcionalidade de editar evento em desenvolvimento.");
+        if (!UserSession.getInstance().isLoggedIn())
+            return;
+
+        try {
+            List<LocalDTO> locais = localService.listarTodos();
+            Integer gestorNumero = UserSession.getInstance().getUser().getNumero();
+
+            Optional<EventoCreateDTO> resultado = EventoDialogHelper.mostrarDialogoEditarEvento(
+                    evento, locais, gestorNumero);
+
+            resultado.ifPresent(dto -> {
+                EventoDTO atualizado = eventoService.atualizar(evento.getId(), dto);
+                if (atualizado != null) {
+                    mostrarSucesso("Evento '" + atualizado.getTitulo() + "' atualizado com sucesso!");
+                    carregarEventos();
+                    carregarComboEventos();
+                } else {
+                    mostrarErro("Falha ao atualizar o evento.");
+                }
+            });
+        } catch (Exception e) {
+            mostrarErro("Erro ao editar evento: " + e.getMessage());
+        }
     }
 
-    /**
-     * Apaga um evento após confirmação.
-     */
     private void apagarEvento(EventoDTO evento) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar Eliminação");
@@ -261,9 +238,6 @@ public class GestorController implements Initializable {
         });
     }
 
-    /**
-     * Carrega e exibe estatísticas do evento selecionado.
-     */
     @FXML
     public void verEstatisticas() {
         EventoDTO selected = cmbEventos.getValue();
@@ -291,9 +265,6 @@ public class GestorController implements Initializable {
         }
     }
 
-    /**
-     * Envia um anúncio para todos os utilizadores.
-     */
     @FXML
     public void enviarAnuncio() {
         String conteudo = txtAnuncio.getText();
@@ -302,9 +273,8 @@ public class GestorController implements Initializable {
             return;
         }
 
-        if (!UserSession.getInstance().isLoggedIn()) {
+        if (!UserSession.getInstance().isLoggedIn())
             return;
-        }
 
         try {
             Integer autorNumero = UserSession.getInstance().getUser().getNumero();
@@ -317,37 +287,32 @@ public class GestorController implements Initializable {
         }
     }
 
-    //MÉTODOS DE NOTIFICAÇÃO
-
+    // Métodos de notificação
     private Window getWindow() {
         return tblLocais.getScene() != null ? tblLocais.getScene().getWindow() : null;
     }
 
     private void mostrarSucesso(String mensagem) {
         Window window = getWindow();
-        if (window != null) {
+        if (window != null)
             ToastNotification.sucesso(window, mensagem);
-        }
     }
 
     private void mostrarErro(String mensagem) {
         Window window = getWindow();
-        if (window != null) {
+        if (window != null)
             ToastNotification.erro(window, mensagem);
-        }
     }
 
     private void mostrarAviso(String mensagem) {
         Window window = getWindow();
-        if (window != null) {
+        if (window != null)
             ToastNotification.aviso(window, mensagem);
-        }
     }
 
     private void mostrarInfo(String mensagem) {
         Window window = getWindow();
-        if (window != null) {
+        if (window != null)
             ToastNotification.info(window, mensagem);
-        }
     }
 }
