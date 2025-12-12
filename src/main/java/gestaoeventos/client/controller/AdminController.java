@@ -520,14 +520,15 @@ public class AdminController implements Initializable {
     private void setupInscricoesTable() {
         colInscId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colInscEvento.setCellValueFactory(c -> new SimpleStringProperty(
-                "Evento #" + c.getValue().getEventoId()));
+                c.getValue().getEventoTitulo() != null ? c.getValue().getEventoTitulo()
+                        : "Evento #" + c.getValue().getEventoId()));
         colInscUtilizador.setCellValueFactory(c -> new SimpleStringProperty(
                 "User #" + c.getValue().getUtilizadorNumero()));
         colInscData.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getDataInscricao() != null ? c.getValue().getDataInscricao().format(DTF) : ""));
         colInscEstado.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getEstado() != null ? c.getValue().getEstado().toString() : ""));
-        colInscCheckIn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().isCheckIn() ? "✓" : "✗"));
+        colInscCheckIn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().isCheckIn() ? "Sim" : "Nao"));
     }
 
     @FXML
