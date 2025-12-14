@@ -34,6 +34,7 @@ public class GestorController implements Initializable {
     private final EventoService eventoService = new EventoService();
     private final NotificacaoClientService notificacaoService = new NotificacaoClientService();
     private final InscricaoService inscricaoService = new InscricaoService();
+    private final CertificadoClientService certificadoService = new CertificadoClientService();
 
     @FXML
     private TableView<LocalDTO> tblLocais;
@@ -97,6 +98,24 @@ public class GestorController implements Initializable {
     @FXML
     private TableColumn<NotificacaoDTO, Void> colAnuncioAcoes;
 
+    // Certificados
+    @FXML
+    private ComboBox<EventoDTO> cmbEventosCert;
+    @FXML
+    private Label lblResultadoCertificados;
+    @FXML
+    private TableView<CertificadoDTO> tblCertificados;
+    @FXML
+    private TableColumn<CertificadoDTO, String> colCertUtilizador;
+    @FXML
+    private TableColumn<CertificadoDTO, String> colCertEvento;
+    @FXML
+    private TableColumn<CertificadoDTO, String> colCertTipo;
+    @FXML
+    private TableColumn<CertificadoDTO, String> colCertData;
+    @FXML
+    private TableColumn<CertificadoDTO, String> colCertCodigo;
+
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @Override
@@ -104,6 +123,7 @@ public class GestorController implements Initializable {
         setupLocaisTable();
         setupEventosTable();
         setupAnunciosTable();
+        setupCertificadosTable();
         setupSpinners();
         carregarLocais();
         carregarEventos();
@@ -222,6 +242,97 @@ public class GestorController implements Initializable {
                     setGraphic(empty ? null : hbox);
                 }
             });
+        }
+    }
+
+    private void setupCertificadosTable() {
+        // Configurar combo de eventos para certificados
+        if (cmbEventosCert != null) {
+            try {
+                List<EventoDTO> eventos = eventoService.listarTodos();
+                cmbEventosCert.setItems(FXCollections.observableArrayList(eventos));
+                cmbEventosCert.setConverter(new javafx.util.StringConverter<>() {
+                    @Override
+                    public String toString(EventoDTO e) {
+                        return e != null ? e.getTitulo() : "";
+                    }
+
+                    @Override
+                    public EventoDTO fromString(String s) {
+                        return null;
+                    }
+                });
+
+                // Ao selecionar evento, carregar certificados
+                cmbEventosCert.valueProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal != null) {
+                        carregarCertificadosEvento(newVal.getId());
+                    }
+                });
+            } catch (Exception e) {
+                System.err.println("Erro ao configurar combo certificados: " + e.getMessage());
+            }
+        }
+
+        // Configurar colunas da tabela
+        if (colCertUtilizador != null) {
+            colCertUtilizador.setCellValueFactory(c -> new SimpleStringProperty(
+                    c.getValue().getUtilizadorNome() != null ? c.getValue().getUtilizadorNome()
+                            : "User #" + c.getValue().getUtilizadorNumero()));
+        }
+        if (colCertEvento != null) {
+            colCertEvento.setCellValueFactory(c -> new SimpleStringProperty(
+                    c.getValue().getEventoTitulo() != null ? c.getValue().getEventoTitulo() : ""));
+        }
+        if (colCertTipo != null) {
+            colCertTipo.setCellValueFactory(c -> new SimpleStringProperty(
+                    c.getValue().getTipoDescricao() != null ? c.getValue().getTipoDescricao()
+                            : (c.getValue().getTipo() != null ? c.getValue().getTipo().getDescricao() : "Presenca")));
+        }
+        if (colCertData != null) {
+            colCertData.setCellValueFactory(c -> new SimpleStringProperty(
+                    c.getValue().getDataEmissao() != null ? c.getValue().getDataEmissao().format(DTF) : ""));
+        }
+        if (colCertCodigo != null) {
+            colCertCodigo.setCellValueFactory(c -> new SimpleStringProperty(
+                    c.getValue().getCodigoVerificacao() != null ? c.getValue().getCodigoVerificacao() : ""));
+        }
+    }
+
+    private void carregarCertificadosEvento(Integer eventoId) {
+        if (tblCertificados == null)
+            return;
+        try {
+            List<CertificadoDTO> certs = certificadoService.listarPorEvento(eventoId);
+            tblCertificados.setItems(FXCollections.observableArrayList(certs));
+        } catch (Exception e) {
+            mostrarErro("Erro ao carregar certificados: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void emitirCertificadosEmMassa() {
+        EventoDTO selected = cmbEventosCert != null ? cmbEventosCert.getValue() : null;
+        if (selected == null) {
+            mostrarAviso("Selecione um evento.");
+            return;
+        }
+        if (!UserSession.getInstance().isLoggedIn())
+            return;
+
+        try {
+            Integer emitidoPor = UserSession.getInstance().getUser().getNumero();
+            // Gestor emite certificado tipo ORGANIZADOR
+            String resultado = certificadoService.emitirEmMassaComTipo(
+                    selected.getId(), emitidoPor, gestaoeventos.entity.TipoCertificado.ORGANIZADOR);
+
+            if (lblResultadoCertificados != null) {
+                lblResultadoCertificados.setText(resultado);
+            }
+            mostrarSucesso("Certificados de Organizador emitidos!");
+            carregarCertificadosEvento(selected.getId());
+        } catch (Exception e) {
+            mostrarErro("Erro ao emitir certificados: " + e.getMessage());
         }
     }
 

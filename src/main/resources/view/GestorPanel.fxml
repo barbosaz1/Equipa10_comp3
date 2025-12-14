@@ -136,6 +136,31 @@
             </VBox>
         </Tab>
         
+        <!-- Tab Certificados -->
+        <Tab text="Emitir Certificados" closable="false">
+            <VBox spacing="15" style="-fx-padding: 20;">
+                <Label text="Emitir certificados para participantes com check-in:" style="-fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="cmbEventosCert" promptText="Selecionar evento..." prefWidth="300"/>
+                    <Button text="Emitir para Todos" onAction="#emitirCertificadosEmMassa" styleClass="btn-primary"/>
+                </HBox>
+                <Label fx:id="lblResultadoCertificados" style="-fx-text-fill: #22c55e;"/>
+                
+                <Separator/>
+                
+                <Label text="Certificados ja emitidos:" style="-fx-font-weight: bold;"/>
+                <TableView fx:id="tblCertificados" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colCertUtilizador" text="Utilizador" prefWidth="200"/>
+                        <TableColumn fx:id="colCertEvento" text="Evento" prefWidth="200"/>
+                        <TableColumn fx:id="colCertTipo" text="Tipo" prefWidth="150"/>
+                        <TableColumn fx:id="colCertData" text="Data Emissao" prefWidth="130"/>
+                        <TableColumn fx:id="colCertCodigo" text="Codigo" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+        
         <!-- Tab QR Code Check-in -->
         <Tab text="QR Code Check-in" closable="false">
             <VBox spacing="20" style="-fx-padding: 20;" alignment="CENTER">
@@ -156,3 +181,4 @@
         
     </TabPane>
 </VBox>
+
