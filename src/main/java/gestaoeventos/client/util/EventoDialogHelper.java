@@ -34,7 +34,6 @@ public class EventoDialogHelper {
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add(
                 EventoDialogHelper.class.getResource("/css/app-theme.css").toExternalForm());
-        dialogPane.setStyle("-fx-background-color: #1E1E1E;");
 
         ButtonType btnCriar = new ButtonType("Criar Evento", ButtonBar.ButtonData.OK_DONE);
         dialogPane.getButtonTypes().addAll(btnCriar, ButtonType.CANCEL);
@@ -44,15 +43,12 @@ public class EventoDialogHelper {
 
         TextField tfTitulo = new TextField();
         tfTitulo.setPromptText("Ex: Workshop de JavaFX");
-        tfTitulo.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         TextArea taDescricao = new TextArea();
         taDescricao.setPromptText("Descrição detalhada do evento...");
         taDescricao.setPrefRowCount(3);
-        taDescricao.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         DatePicker dpDataInicio = new DatePicker(LocalDate.now().plusDays(7));
-        dpDataInicio.setStyle("-fx-background-color: #2A2A2A;");
 
         Spinner<Integer> spHoraInicio = new Spinner<>(0, 23, 9);
         spHoraInicio.setEditable(true);
@@ -63,7 +59,6 @@ public class EventoDialogHelper {
         spMinutoInicio.setPrefWidth(70);
 
         DatePicker dpDataFim = new DatePicker(LocalDate.now().plusDays(7));
-        dpDataFim.setStyle("-fx-background-color: #2A2A2A;");
 
         Spinner<Integer> spHoraFim = new Spinner<>(0, 23, 17);
         spHoraFim.setEditable(true);
@@ -94,7 +89,6 @@ public class EventoDialogHelper {
 
         TextField tfAreaTematica = new TextField();
         tfAreaTematica.setPromptText("Ex: Programação, Web, IA...");
-        tfAreaTematica.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         ComboBox<LocalDTO> cbLocal = new ComboBox<>(
                 FXCollections.observableArrayList(locais));
@@ -145,7 +139,7 @@ public class EventoDialogHelper {
 
         ScrollPane scrollPane = new ScrollPane(grid);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background: #1E1E1E; -fx-background-color: #1E1E1E;");
+
         scrollPane.setPrefHeight(450);
 
         dialogPane.setContent(scrollPane);
@@ -228,7 +222,6 @@ public class EventoDialogHelper {
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add(
                 EventoDialogHelper.class.getResource("/css/app-theme.css").toExternalForm());
-        dialogPane.setStyle("-fx-background-color: #1E1E1E;");
 
         ButtonType btnGuardar = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
         dialogPane.getButtonTypes().addAll(btnGuardar, ButtonType.CANCEL);
@@ -237,18 +230,15 @@ public class EventoDialogHelper {
         guardarButton.getStyleClass().add("btn-primary");
 
         TextField tfTitulo = new TextField(evento.getTitulo());
-        tfTitulo.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         TextArea taDescricao = new TextArea(evento.getDescricao());
         taDescricao.setPrefRowCount(3);
-        taDescricao.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         LocalDate inicioDate = evento.getDataInicio() != null ? evento.getDataInicio().toLocalDate() : LocalDate.now();
         LocalTime inicioTime = evento.getDataInicio() != null ? evento.getDataInicio().toLocalTime()
                 : LocalTime.of(9, 0);
 
         DatePicker dpDataInicio = new DatePicker(inicioDate);
-        dpDataInicio.setStyle("-fx-background-color: #2A2A2A;");
 
         Spinner<Integer> spHoraInicio = new Spinner<>(0, 23, inicioTime.getHour());
         spHoraInicio.setEditable(true);
@@ -262,7 +252,6 @@ public class EventoDialogHelper {
         LocalTime fimTime = evento.getDataFim() != null ? evento.getDataFim().toLocalTime() : LocalTime.of(17, 0);
 
         DatePicker dpDataFim = new DatePicker(fimDate);
-        dpDataFim.setStyle("-fx-background-color: #2A2A2A;");
 
         Spinner<Integer> spHoraFim = new Spinner<>(0, 23, fimTime.getHour());
         spHoraFim.setEditable(true);
@@ -293,7 +282,6 @@ public class EventoDialogHelper {
         });
 
         TextField tfAreaTematica = new TextField(evento.getAreaTematica());
-        tfAreaTematica.setStyle("-fx-background-color: #2A2A2A; -fx-text-fill: white; -fx-prompt-text-fill: #6B7280;");
 
         ComboBox<LocalDTO> cbLocal = new ComboBox<>(
                 FXCollections.observableArrayList(locais));
@@ -349,7 +337,7 @@ public class EventoDialogHelper {
 
         ScrollPane scrollPane = new ScrollPane(grid);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background: #1E1E1E; -fx-background-color: #1E1E1E;");
+
         scrollPane.setPrefHeight(450);
 
         dialogPane.setContent(scrollPane);
