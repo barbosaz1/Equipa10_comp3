@@ -149,7 +149,7 @@ public class LoginController {
 
     private void goToDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main/MainLayout.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) txtNumero.getScene().getWindow();

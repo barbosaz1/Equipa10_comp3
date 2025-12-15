@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefWidth="500.0" spacing="20.0" styleClass="card" stylesheets="@../css/app-theme.css" 
+<VBox prefWidth="500.0" spacing="20.0" styleClass="card" stylesheets="@../../css/app-theme.css" 
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="gestaoeventos.client.controller.DetalhesEventoController">
 
