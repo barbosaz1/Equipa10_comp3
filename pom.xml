@@ -9,10 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.upt.lp</groupId>
-	<artifactId>gestaoeventos</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>gestao-eventos-api</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>gestaoeventos-client</artifactId>
+	<version>1.0.0</version>
+	<name>Gestão de Eventos - JavaFX (Equipa 10)</name>
+	<description>
+	Cliente JavaFX da Componente 3 do projeto de Laboratório de Programação.
+	Equipa 10.
+	</description>
 	<url/>
 	<licenses>
 		<license/>
