@@ -8,8 +8,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
 /**
- * Classe utilitária para aplicar estilos consistentes a todos os diálogos.
- * Garante um visual dark premium moderno em toda a aplicação.
+ * Classe utilitária para aplicar estilos consistentes a todos os dialogs.
+ * Garante um estilo para os dialogs em toda a aplicação.
  */
 public class DialogStyleHelper {
 
@@ -26,7 +26,7 @@ public class DialogStyleHelper {
     private static final String COLOR_WARNING = "#f59e0b";
 
     /**
-     * Aplica estilo premium a um Dialog genérico.
+     * Aplica estilo a um Dialog 
      */
     public static void styleDialog(Dialog<?> dialog) {
         DialogPane pane = dialog.getDialogPane();
@@ -53,7 +53,6 @@ public class DialogStyleHelper {
         // Estilizar botões
         styleDialogButtons(pane);
 
-        // Remover decorações da janela para visual mais limpo
         dialog.initStyle(StageStyle.TRANSPARENT);
 
         // Tamanho mínimo
@@ -61,7 +60,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um Alert.
+     * Aplica estilo a um Alert.
      */
     public static void styleAlert(Alert alert) {
         DialogPane pane = alert.getDialogPane();
@@ -69,7 +68,7 @@ public class DialogStyleHelper {
         pane.getStylesheets().add(
                 DialogStyleHelper.class.getResource("/css/app-theme.css").toExternalForm());
 
-        // Cor de fundo baseada no tipo de alert
+        // Cor de fundo de alert
         String headerColor = switch (alert.getAlertType()) {
             case CONFIRMATION -> COLOR_ACCENT;
             case ERROR -> COLOR_DANGER;
@@ -115,7 +114,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Estiliza os botões do diálogo.
+     * Estiliza os botões.
      */
     private static void styleDialogButtons(DialogPane pane) {
         // Estilizar todos os botões
@@ -163,7 +162,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Cria um GridPane estilizado para formulários em diálogos.
+     * Cria um GridPane estilizado.
      */
     public static GridPane createStyledGrid() {
         GridPane grid = new GridPane();
@@ -175,7 +174,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Cria uma Label estilizada para formulários.
+     * Cria uma Label para formulários.
      */
     public static Label createStyledLabel(String text) {
         Label label = new Label(text);
@@ -188,7 +187,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Cria uma Label secundária/muted.
+     * Cria uma Label.
      */
     public static Label createMutedLabel(String text) {
         Label label = new Label(text);
@@ -200,7 +199,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um TextField.
+     * Aplica estilo a um TextField.
      */
     public static void styleTextField(TextField field) {
         field.setStyle(String.format("""
@@ -215,7 +214,7 @@ public class DialogStyleHelper {
                 -fx-font-size: 13px;
                 """, COLOR_BG_SURFACE, COLOR_TEXT_PRIMARY, COLOR_TEXT_MUTED, COLOR_BORDER));
 
-        // Efeito hover/focus via CSS
+        // Efeito hover
         field.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
             if (isFocused) {
                 field.setStyle(field.getStyle() + String.format("""
@@ -229,7 +228,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um TextArea.
+     * Aplica estilo a um TextArea.
      */
     public static void styleTextArea(TextArea area) {
         area.setStyle(String.format("""
@@ -246,14 +245,14 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um PasswordField.
+     * Aplica estilo a um PasswordField.
      */
     public static void stylePasswordField(PasswordField field) {
         styleTextField(field);
     }
 
     /**
-     * Aplica estilo premium a um ComboBox.
+     * Aplica estilo a um ComboBox.
      */
     public static <T> void styleComboBox(ComboBox<T> combo) {
         combo.setStyle(String.format("""
@@ -265,7 +264,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um DatePicker.
+     * Aplica estilo a um DatePicker.
      */
     public static void styleDatePicker(DatePicker picker) {
         picker.setStyle(String.format("""
@@ -277,7 +276,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Aplica estilo premium a um Spinner.
+     * Aplica estilo a um Spinner.
      */
     public static <T> void styleSpinner(Spinner<T> spinner) {
         spinner.setStyle(String.format("""
@@ -301,7 +300,7 @@ public class DialogStyleHelper {
     }
 
     /**
-     * Cria um contentor VBox estilizado para conteúdo de diálogo.
+     * Cria um contentor VBox estilizado
      */
     public static VBox createStyledContent() {
         VBox content = new VBox(16);
