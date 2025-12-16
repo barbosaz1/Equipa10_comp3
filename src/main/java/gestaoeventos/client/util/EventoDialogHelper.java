@@ -209,7 +209,7 @@ public class EventoDialogHelper {
     }
 
     /**
-     * Mostra um diálogo para editar um evento existente.
+     * Mostra um dialog para editar um evento existente.
      */
     public static Optional<EventoCreateDTO> mostrarDialogoEditarEvento(
             gestaoeventos.dto.EventoDTO evento, List<LocalDTO> locais, Integer gestorNumero) {
