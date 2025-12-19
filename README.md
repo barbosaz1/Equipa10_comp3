@@ -112,8 +112,8 @@ gestaoeventos4/
 
 1. **Clonar o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/gestaoeventos4.git
-   cd gestaoeventos4
+   git clone https://github.com/seu-usuario/gestaoeventos.git
+   cd gestaoeventos
    ```
 
 2. **Configurar a base de dados:**
